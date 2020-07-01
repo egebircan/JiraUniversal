@@ -11,5 +11,10 @@ export const PAGES = {
   about: {
     path: '/about',
     name: 'About'
+  },
+  deneme: {
+    path: "/deneme",
+    name: "Deneme"
   }
+
 }

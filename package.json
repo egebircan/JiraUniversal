@@ -18,7 +18,8 @@
     "next-compose-plugins": "^2.2.0",
     "next-pwa": "^2.6.1",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "typescript": "^3.9.6"
   },
   "devDependencies": {
     "@babel/core": "^7.10.2",

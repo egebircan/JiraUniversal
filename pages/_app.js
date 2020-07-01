@@ -1,5 +1,5 @@
 import React from 'react'
-import { StoreProvider } from '../store'
+import { StoreProvider } from '../store/index.tsx'
 
 import '../styles/app.css'
 
