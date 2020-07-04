@@ -1,13 +1,18 @@
 import React, { useContext } from 'react'
 import { StoreContext } from "../store"
+import Layout from '../components/layout'
 
-function Deneme() {
+const Leaderboard: React.FC = () => {
   const { value } = useContext(StoreContext)
   const { state, dispatch} = value
 
+  console.log(state)
+
   return (
-    <h1>DENEME</h1>
+    <Layout>
+      <h1>Leaderboard</h1>
+    </Layout>
   )
 }
 
-export default Deneme
+export default Leaderboard

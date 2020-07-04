@@ -11,8 +11,8 @@ export interface Action {
   payload: any
 }
 
-type Todo = {
-
+export type Todo = {
+  name: string
 }
 
 type InProgress = {

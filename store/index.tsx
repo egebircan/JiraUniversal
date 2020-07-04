@@ -41,7 +41,7 @@ export function StoreProvider({ children }) {
   //////
 
   const initialState: State = {
-    todoTasks: [],
+    todoTasks: [{name: 'Evrensel'}, {name: 'Jira'}],
     inProgressTasks: [],
     doneTasks: [],
     notes: [],
