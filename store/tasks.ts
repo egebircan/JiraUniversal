@@ -1,19 +1,9 @@
-import { State, Action } from "./types"
+import { State, Action, Todo } from "./types"
 
 export function taskReducer(state: State, action: Action) {
   switch (action.type) {
-    case 'FETCH_DATA':
-      return { ...state, episodes: action.payload };
-    case 'ADD_FAV':
-      return {
-        ...state,
-        favourites: [...state.doneTasks, action.payload]
-      };
-    case 'REMOVE_FAV':
-      return {
-        ...state,
-        favourites: action.payload
-      };
+    case 'CREATE_TASK':
+      return { ...state, todoTasks: [...state.todoTasks, action.payload] }
     default:
       return state;
   }

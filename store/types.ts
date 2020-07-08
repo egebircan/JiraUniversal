@@ -12,19 +12,31 @@ export interface Action {
 }
 
 export type Todo = {
-  name: string
+  title: string
+  description: string
+  point: string
 }
 
-type InProgress = {
+export type InProgress = {
+  title: string
+  description: string
+  point: string
+}
+
+export type Done = {
+  title: string
+  description: string
+  point: string
+}
+
+export type Note = {
 
 }
 
-type Done = {
-
-}
-
-type Note = {
-
+export enum TaskType {
+  Todo = "secondary",
+  InProgress = "info",
+  Done = "success",
 }
 
 

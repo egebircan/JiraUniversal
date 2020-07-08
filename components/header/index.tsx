@@ -1,5 +1,5 @@
 import React from 'react'
-import { Nav, Button } from 'react-bootstrap'
+import { Nav } from 'react-bootstrap'
 import Link from 'next/link'
 import styles from './index.module.css'
 

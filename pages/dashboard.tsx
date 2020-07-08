@@ -1,18 +1,34 @@
-import React, { useContext } from 'react'
-import { StoreContext } from "../store"
-import Layout from '../components/layout'
-import { Container, Row, Col } from 'react-bootstrap'
-import { Todo } from '../store/types'
+import React, { useContext, useState } from 'react'
+import { StoreContext } from "store"
+import Layout from 'components/layout'
+import CreateTaskModal from "components/createTaskModal"
+import { Container, Row, Col, Button } from 'react-bootstrap'
+import { Todo, InProgress, Done } from 'store/types'
+import Task from "components/task"
+import { TaskType } from "store/types"
 
 const Dashboard: React.FC = () => {
   const { value } = useContext(StoreContext)
   const { state, dispatch } = value
+  const [ createTaskModalVisibility, setCreateTaskModalVisibility ] = useState(false)
 
-  console.log(state)
+  //console.log(state)
 
   const renderTodo = () => {
     return (
-      state.todoTasks.map((todo: Todo) => <div>{todo.name}</div>)
+      state.todoTasks.map((todo: Todo) => <Task type={TaskType.Todo} title={todo.title} description={todo.description} point={todo.point}/>)
+    )
+  }
+
+  const renderInProgress = () => {
+    return (
+      state.todoTasks.map((todo: InProgress) => <Task type={TaskType.InProgress} title={todo.title} description={todo.description} point={todo.point}/>)
+    )
+  }
+
+  const renderDone = () => {
+    return (
+      state.todoTasks.map((todo: Done) => <Task type={TaskType.Done} title={todo.title} description={todo.description} point={todo.point}/>)
     )
   }
 
@@ -22,18 +38,20 @@ const Dashboard: React.FC = () => {
         <Row>
           <Col>
             TODO
-            <div style={{ border: '4px solid' }}>{renderTodo()}</div>
+            <Button variant="primary" size="sm" onClick={() => setCreateTaskModalVisibility(true)}>+</Button>
+            {renderTodo()}
           </Col>
           <Col md={{ offset: 1 }}>
             IN-PROGRESS
-            <div style={{ border: '4px solid' }}>{renderTodo()}</div>
+            {renderInProgress()}
           </Col>
           <Col md={{ offset: 1 }}>
             DONE
-            <div style={{ border: '4px solid' }}>{renderTodo()}</div>
+            {renderDone()}
           </Col>
         </Row>
       </Container>
+      <CreateTaskModal show={createTaskModalVisibility} onHide={() => setCreateTaskModalVisibility(false)}/>
     </Layout>
   )
 }
