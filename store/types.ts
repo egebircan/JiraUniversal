@@ -34,9 +34,8 @@ export type Note = {
 }
 
 export enum TaskType {
-  Todo = "secondary",
-  InProgress = "info",
-  Done = "success",
+  Todo = "todo",
+  InProgress = "inprogress",
+  Done = "done",
 }
-
 
