@@ -15,8 +15,6 @@ const Dashboard: React.FC = () => {
   const { state, dispatch } = value
   const [ createTaskModalVisibility, setCreateTaskModalVisibility ] = useState(false)
 
-  //console.log(state)
-
   const renderTodo = () => {
     return (
       state.todoTasks.map((todo: Todo) => <Task type={TaskType.Todo} bg={"secondary"} title={todo.title} description={todo.description} point={todo.point}/>)
@@ -25,14 +23,18 @@ const Dashboard: React.FC = () => {
 
   const renderInProgress = () => {
     return (
-      state.todoTasks.map((todo: InProgress) => <Task type={TaskType.Todo} bg={"info"} title={todo.title} description={todo.description} point={todo.point}/>)
+      state.inProgressTasks.map((todo: InProgress) => <Task type={TaskType.InProgress} bg={"info"} title={todo.title} description={todo.description} point={todo.point}/>)
     )
   }
 
   const renderDone = () => {
     return (
-      state.todoTasks.map((todo: Done) => <Task type={TaskType.Todo} bg={"success"} title={todo.title} description={todo.description} point={todo.point}/>)
+      state.doneTasks.map((todo: Done) => <Task type={TaskType.Done} bg={"success"} title={todo.title} description={todo.description} point={todo.point}/>)
     )
+  }
+
+  const onDrop = (item, dropTarget) => {
+    dispatch({ type: "MOVE_TASK", payload: item, dropTarget })
   }
 
   return (
@@ -43,19 +45,19 @@ const Dashboard: React.FC = () => {
             <Col>
               TODO
               <Button variant="primary" size="sm" onClick={() => setCreateTaskModalVisibility(true)}>+</Button>
-              <TaskDropCol acceptType={TaskType.Todo}>
+              <TaskDropCol onDrop={onDrop} acceptTypes={[TaskType.InProgress]} type={"todoTasks"}>
                 {renderTodo()}
               </TaskDropCol>
             </Col>
             <Col md={{ offset: 1 }}>
               IN-PROGRESS
-              <TaskDropCol acceptType={TaskType.InProgress}>
+              <TaskDropCol onDrop={onDrop} acceptTypes={[TaskType.Todo, TaskType.Done]} type={"inProgressTasks"}>
                 {renderInProgress()}
               </TaskDropCol>
             </Col>
             <Col md={{ offset: 1 }}>
               DONE
-              <TaskDropCol acceptType={TaskType.Todo}>
+              <TaskDropCol onDrop={onDrop} acceptTypes={[TaskType.InProgress]} type={"doneTasks"} >
                 {renderDone()}
               </TaskDropCol>
             </Col>

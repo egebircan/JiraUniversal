@@ -11,8 +11,6 @@ const CreateTaskForm: React.FC<CreateTaskFormProps> = (props) => {
   const { value } = useContext(StoreContext)
   const { state, dispatch } = value
 
-  //console.log(state)
-
   const onChange = e => {
     setFormValues({ ...formValues, [e.target.name]: e.target.value})
   }

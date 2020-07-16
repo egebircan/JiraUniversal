@@ -3,13 +3,15 @@ import { useDrop } from 'react-dnd'
 import { TaskType } from '../../store/types'
 
 interface TaskDropColProps {
-  acceptType: TaskType
+  acceptTypes: TaskType[]
+  onDrop: any
+  type: string
 }
 
-const TaskDropCol: React.FC<TaskDropColProps> = (props) => {
+const TaskDropCol: React.FC<TaskDropColProps> = ({ children, acceptTypes, type, onDrop }) => {
   const [{ isOver, canDrop }, drop] = useDrop({
-    accept: props.acceptType,
-    drop: () => console.log("Item dropped"),
+    accept: acceptTypes,
+    drop: (item) => onDrop(item, type),
     collect: monitor => ({
       isOver: monitor.isOver(),
       canDrop: monitor.canDrop()
@@ -18,7 +20,7 @@ const TaskDropCol: React.FC<TaskDropColProps> = (props) => {
 
   return(
     <div style={{height: '500px'}} ref={drop}>
-      {props.children}
+      {children}
     </div>
   )
 }

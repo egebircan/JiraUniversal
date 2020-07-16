@@ -2,13 +2,14 @@ export interface State {
   todoTasks: Todo[]
   inProgressTasks: InProgress[]
   doneTasks: Done[]
-  notes: Note[]
-  score: number
+  //notes: Note[]
+  //score: number
 }
 
 export interface Action {
   type: string
   payload: any
+  dropTarget: string
 }
 
 export type Todo = {

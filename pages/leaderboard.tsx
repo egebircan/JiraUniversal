@@ -6,8 +6,6 @@ const Leaderboard: React.FC = () => {
   const { value } = useContext(StoreContext)
   const { state, dispatch} = value
 
-  console.log(state)
-
   return (
     <Layout>
       <h1>Leaderboard</h1>

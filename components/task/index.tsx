@@ -11,13 +11,13 @@ interface TaskCardProps {
   type: TaskType
 }
 
-const Task: React.FC<TaskCardProps> = (props) => {
+const Task: React.FC<TaskCardProps> = ({ type, bg, title, point, description }) => {
   const [{isDragging}, drag] = useDrag({
-    item: { type: props.type },
+    item: { type, title, description, point },
     end: (item, monitor) => {
       const dropResult = monitor.getDropResult()
       if (item && dropResult) {
-        console.log(item)
+        //console.log(item)
       }
     },
     collect: monitor => ({
@@ -25,16 +25,14 @@ const Task: React.FC<TaskCardProps> = (props) => {
     }),
   })
 
-  isDragging && console.log("Item dragging")
-
   return(
     <div ref={drag}>
-      <Card style={{ width: '18rem' }}  bg={props.bg} text={'white'} className="mb-2">
-        <Card.Header>{props.title}</Card.Header>
+      <Card style={{ width: '18rem' }}  bg={bg} text={'white'} className="mb-2">
+        <Card.Header>{title}</Card.Header>
         <Card.Body>
-          <Card.Title>{props.point}</Card.Title>
+          <Card.Title>{point}</Card.Title>
           <Card.Text>
-            {props.description}
+            {description}
           </Card.Text>
         </Card.Body>
       </Card>

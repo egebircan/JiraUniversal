@@ -44,8 +44,8 @@ export function StoreProvider({ children }) {
     todoTasks: [{ title: 'Evrensel', description: "safdsgdfhgfhgfhgdsfs", point: "MEDIUM" }, { title: 'Jira', description: "safdsgdfhgfhgfhgdsfs", point: "EASY" }],
     inProgressTasks: [],
     doneTasks: [],
-    notes: [],
-    score: 0,
+    //notes: [],
+    //score: 0,
   };
 
   /* const [state, dispatch] = useReducer(combineReducers({
