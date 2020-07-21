@@ -1,7 +1,9 @@
-import React from "react"
-import { Card } from 'react-bootstrap'
+import React, { useState, useContext } from "react"
+import { Card, Button } from 'react-bootstrap'
 import { TaskType } from "store/types";
 import { useDrag } from 'react-dnd'
+import ModalWithChildren from 'components/modalWithChildren'
+import { StoreContext } from "store"
 
 interface TaskCardProps {
   bg: string
@@ -12,6 +14,11 @@ interface TaskCardProps {
 }
 
 const Task: React.FC<TaskCardProps> = ({ type, bg, title, point, description }) => {
+
+  const [ modalWithChildrenVisibility, setModalWithChildrenVisibility ] = useState(false)
+  const { value } = useContext(StoreContext)
+  const { state, dispatch } = value
+
   const [{isDragging}, drag] = useDrag({
     item: { type, title, description, point },
     end: (item, monitor) => {
@@ -25,18 +32,32 @@ const Task: React.FC<TaskCardProps> = ({ type, bg, title, point, description }) 
     }),
   })
 
+  const deleteTask = () => {
+    dispatch({ type: "DELETE_TASK", payload: title})
+    setModalWithChildrenVisibility(false)
+  }
+
   return(
-    <div ref={drag}>
-      <Card style={{ width: '18rem' }}  bg={bg} text={'white'} className="mb-2">
-        <Card.Header>{title}</Card.Header>
-        <Card.Body>
-          <Card.Title>{point}</Card.Title>
-          <Card.Text>
-            {description}
-          </Card.Text>
-        </Card.Body>
-      </Card>
-    </div>
+    <>
+      <div ref={drag}>
+        <Card style={{ width: '18rem' }}  bg={bg} text={'white'} className="mb-2">
+          <Card.Header>
+            {title}
+            <Button style={{ float: "right" }} onClick={() => setModalWithChildrenVisibility(true)}>X</Button>
+          </Card.Header>
+          <Card.Body>
+            <Card.Title>{point}</Card.Title>
+            <Card.Text>
+              {description}
+            </Card.Text>
+          </Card.Body>
+        </Card>
+      </div>
+      <ModalWithChildren title="Delete Task" show={modalWithChildrenVisibility} onHide={() => setModalWithChildrenVisibility(false)}>
+        Are you sure to delete?
+        <Button onClick={deleteTask}>Yes</Button>
+      </ModalWithChildren>
+    </>
 )};
 
 export default Task

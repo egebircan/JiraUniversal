@@ -1,9 +1,13 @@
 export interface State {
+  tasks: Tasks
+  notes: Note[]
+  score: number
+}
+
+export type Tasks = {
   todoTasks: Todo[]
   inProgressTasks: InProgress[]
   doneTasks: Done[]
-  //notes: Note[]
-  //score: number
 }
 
 export interface Action {
@@ -31,7 +35,7 @@ export type Done = {
 }
 
 export type Note = {
-
+  text: string
 }
 
 export enum TaskType {

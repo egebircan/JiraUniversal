@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react'
 import { StoreContext } from "store"
 import Layout from 'components/layout'
-import CreateTaskModal from "components/createTaskModal"
+import ModalWithChildren from "components/modalWithChildren"
 import { Container, Row, Col, Button } from 'react-bootstrap'
 import { Todo, InProgress, Done } from 'store/types'
 import Task from "components/task"
@@ -9,32 +9,37 @@ import { TaskType } from "store/types"
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import TaskDropCol from 'components/taskDropCol'
+import CreateTaskForm from 'components/createTaskForm'
 
 const Dashboard: React.FC = () => {
   const { value } = useContext(StoreContext)
   const { state, dispatch } = value
-  const [ createTaskModalVisibility, setCreateTaskModalVisibility ] = useState(false)
+  const {tasks, notes, score} = state
+  const [ modalWithChildrenVisibility, setModalWithChildrenVisibility ] = useState(false)
+
+  console.log("STATE", state)
 
   const renderTodo = () => {
     return (
-      state.todoTasks.map((todo: Todo) => <Task type={TaskType.Todo} bg={"secondary"} title={todo.title} description={todo.description} point={todo.point}/>)
+      tasks.todoTasks.map((todo: Todo) => <Task type={TaskType.Todo} bg={"secondary"} title={todo.title} description={todo.description} point={todo.point}/>)
     )
   }
 
   const renderInProgress = () => {
     return (
-      state.inProgressTasks.map((todo: InProgress) => <Task type={TaskType.InProgress} bg={"info"} title={todo.title} description={todo.description} point={todo.point}/>)
+      tasks.inProgressTasks.map((todo: InProgress) => <Task type={TaskType.InProgress} bg={"info"} title={todo.title} description={todo.description} point={todo.point}/>)
     )
   }
 
   const renderDone = () => {
     return (
-      state.doneTasks.map((todo: Done) => <Task type={TaskType.Done} bg={"success"} title={todo.title} description={todo.description} point={todo.point}/>)
+      tasks.doneTasks.map((todo: Done) => <Task type={TaskType.Done} bg={"success"} title={todo.title} description={todo.description} point={todo.point}/>)
     )
   }
 
   const onDrop = (item, dropTarget) => {
     dispatch({ type: "MOVE_TASK", payload: item, dropTarget })
+    dispatch({ type: "BASIC_CASE", payload: "Şerifali"})
   }
 
   return (
@@ -44,7 +49,7 @@ const Dashboard: React.FC = () => {
           <Row>
             <Col>
               TODO
-              <Button variant="primary" size="sm" onClick={() => setCreateTaskModalVisibility(true)}>+</Button>
+              <Button variant="primary" size="sm" onClick={() => setModalWithChildrenVisibility(true)}>+</Button>
               <TaskDropCol onDrop={onDrop} acceptTypes={[TaskType.InProgress]} type={"todoTasks"}>
                 {renderTodo()}
               </TaskDropCol>
@@ -64,7 +69,9 @@ const Dashboard: React.FC = () => {
           </Row>
         </Container>
       </DndProvider>
-      <CreateTaskModal show={createTaskModalVisibility} onHide={() => setCreateTaskModalVisibility(false)}/>
+      <ModalWithChildren show={modalWithChildrenVisibility} onHide={() => setModalWithChildrenVisibility(false)} title="create task">
+        <CreateTaskForm closeModal={() => setModalWithChildrenVisibility(false)}/>
+      </ModalWithChildren>
     </Layout>
   )
 }

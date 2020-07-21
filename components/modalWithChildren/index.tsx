@@ -2,12 +2,13 @@ import React from "react"
 import { Modal } from 'react-bootstrap'
 import CreateTaskForm from "components/createTaskForm"
 
-interface CreateTaskModalProps {
+interface ModalWithChildrenProps {
   show: boolean
+  title: string
   onHide: () => any
 }
 
-const CreateTaskModal: React.FC<CreateTaskModalProps> = (props) => {
+const ModalWithChildren: React.FC<ModalWithChildrenProps> = (props) => {
   return(
     <Modal
       {...props}
@@ -17,14 +18,14 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = (props) => {
     >
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">
-          Create Task
+          {props.title}
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <CreateTaskForm closeModal={props.onHide} />
+        {props.children}
       </Modal.Body>
     </Modal>
   )
 }
 
-export default CreateTaskModal
+export default ModalWithChildren

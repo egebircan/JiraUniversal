@@ -3,18 +3,9 @@ import { THEME } from '../constants'
 import { State, Action } from "./types"
 import { taskReducer } from "./tasks"
 import { noteReducer } from "./notes"
+import { scoreReducer } from "./score"
 
 export const StoreContext = createContext(null)
-
-function combineReducers(reducers) {  
-  return (state = {}, action: Action) => {
-    const newState = {};
-    for (let key in reducers) {
-      newState[key] = reducers[key](state[key], action);
-    }
-    return newState;
-  }
-}
 
 export function StoreProvider({ children }) {
 
@@ -41,19 +32,26 @@ export function StoreProvider({ children }) {
   //////
 
   const initialState: State = {
-    todoTasks: [{ title: 'Evrensel', description: "safdsgdfhgfhgfhgdsfs", point: "MEDIUM" }, { title: 'Jira', description: "safdsgdfhgfhgfhgdsfs", point: "EASY" }],
-    inProgressTasks: [],
-    doneTasks: [],
-    //notes: [],
-    //score: 0,
+    tasks: {
+      todoTasks: [{ title: 'Evrensel', description: "safdsgdfhgfhgfhgdsfs", point: "MEDIUM" }, { title: 'Jira', description: "safdsgdfhgfhgfhgdsfs", point: "EASY" }],
+      inProgressTasks: [],
+      doneTasks: [],
+    },
+    notes: [],
+    score: 0,
   };
 
-  /* const [state, dispatch] = useReducer(combineReducers({
-    tasks: taskReducer,
-    notes: noteReducer
-  }), initialState); */
+  const rootReducer: any = (initialState: State, action: Action) => {
+    const { tasks, notes, score } = initialState
 
-  const [state, dispatch] = useReducer(taskReducer, initialState);
+    return {
+      tasks: taskReducer(tasks, action),
+      notes: noteReducer(notes, action),
+      score: scoreReducer(score, action),
+    }
+  } 
+
+  const [state, dispatch] = useReducer(rootReducer, initialState);
 
   const value = { state, dispatch };
 

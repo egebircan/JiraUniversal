@@ -1,6 +1,6 @@
-import { State, Action, Note } from "./types"
+import { State, Action,  } from "./types"
 
-export function noteReducer(state: Note[], action: Action) {
+export function scoreReducer(state: number, action: Action) {
   switch (action.type) {
     case 'BASIC_CASE':
       console.log(action.payload)
