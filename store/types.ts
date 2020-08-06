@@ -17,21 +17,24 @@ export interface Action {
 }
 
 export type Todo = {
+  id: string
   title: string
   description: string
-  point: string
+  score: number
 }
 
 export type InProgress = {
+  id: string
   title: string
   description: string
-  point: string
+  score: number
 }
 
 export type Done = {
+  id: string
   title: string
   description: string
-  point: string
+  score: number
 }
 
 export type Note = {
@@ -39,8 +42,7 @@ export type Note = {
 }
 
 export enum TaskType {
-  Todo = "todo",
-  InProgress = "inprogress",
-  Done = "done",
+  Todo = 'todo',
+  InProgress = 'inprogress',
+  Done = 'done'
 }
-

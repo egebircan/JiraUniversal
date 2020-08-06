@@ -1,10 +1,10 @@
-import { State, Action,  } from "./types"
+import { Action } from './types'
 
 export function scoreReducer(state: number, action: Action) {
   switch (action.type) {
-    case 'BASIC_CASE':
-      console.log(action.payload)
+    case 'UPDATE_SCORE':
+      return state + action.payload
     default:
-      console.log(action.payload)
+      return state
   }
 }

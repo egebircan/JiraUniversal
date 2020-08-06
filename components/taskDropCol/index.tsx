@@ -8,18 +8,23 @@ interface TaskDropColProps {
   type: string
 }
 
-const TaskDropCol: React.FC<TaskDropColProps> = ({ children, acceptTypes, type, onDrop }) => {
+const TaskDropCol: React.FC<TaskDropColProps> = ({
+  children,
+  acceptTypes,
+  type,
+  onDrop
+}) => {
   const [{ isOver, canDrop }, drop] = useDrop({
     accept: acceptTypes,
     drop: (item) => onDrop(item, type),
-    collect: monitor => ({
+    collect: (monitor) => ({
       isOver: monitor.isOver(),
       canDrop: monitor.canDrop()
-    }),
+    })
   })
 
-  return(
-    <div style={{height: '500px'}} ref={drop}>
+  return (
+    <div style={{ height: '700px', overflow: 'auto' }} ref={drop}>
       {children}
     </div>
   )
