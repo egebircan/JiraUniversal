@@ -29,13 +29,8 @@ export function StoreProvider({ children }) {
   }, [theme])
 
   //////
-
   const initialState: State = {
-    tasks: {
-      todoTasks: [],
-      inProgressTasks: [],
-      doneTasks: []
-    },
+    tasks: [],
     notes: [],
     score: 0
   }
@@ -49,7 +44,7 @@ export function StoreProvider({ children }) {
       score: scoreReducer(score, action)
     }
   }
-
+  
   const [state, dispatch] = useReducer(rootReducer, initialState)
 
   const value = { state, dispatch }

@@ -1,13 +1,16 @@
 export interface State {
-  tasks: Tasks
+  tasks: TaskInterface[]
   notes: Note[]
   score: number
 }
 
-export type Tasks = {
-  todoTasks: Todo[]
-  inProgressTasks: InProgress[]
-  doneTasks: Done[]
+export type TaskInterface = {
+  taskId: number
+  userName: string
+  type: string
+  title: string
+  description: string
+  score: number
 }
 
 export interface Action {
@@ -17,21 +20,21 @@ export interface Action {
 }
 
 export type Todo = {
-  id: string
+  taskId: number
   title: string
   description: string
   score: number
 }
 
 export type InProgress = {
-  id: string
+  taskId: number
   title: string
   description: string
   score: number
 }
 
 export type Done = {
-  id: string
+  taskId: number
   title: string
   description: string
   score: number

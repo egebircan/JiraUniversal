@@ -7,7 +7,7 @@ import { StoreContext } from 'store'
 
 interface TaskCardProps {
   bg: string
-  id: string
+  taskId: number
   title: string
   score: number
   description: string
@@ -15,7 +15,7 @@ interface TaskCardProps {
 }
 
 const Task: React.FC<TaskCardProps> = ({
-  id,
+  taskId,
   type,
   bg,
   title,
@@ -30,7 +30,7 @@ const Task: React.FC<TaskCardProps> = ({
   const { state, dispatch } = value
 
   const [{ isDragging }, drag] = useDrag({
-    item: { id, type, title, description, score },
+    item: { taskId, type, title, description, score },
     end: (item, monitor) => {
       const dropResult = monitor.getDropResult()
       if (item && dropResult) {
@@ -43,7 +43,7 @@ const Task: React.FC<TaskCardProps> = ({
   })
 
   const deleteTask = () => {
-    dispatch({ type: 'DELETE_TASK', payload: id })
+    dispatch({ type: 'DELETE_TASK', payload: taskId })
     if (type === 'done') dispatch({ type: 'UPDATE_SCORE', payload: -score })
     setModalWithChildrenVisibility(false)
   }

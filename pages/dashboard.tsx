@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useReducer } from 'react'
 import { StoreContext } from 'store'
 import Layout from 'components/layout'
 import ModalWithChildren from 'components/modalWithChildren'
@@ -10,24 +10,30 @@ import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import TaskDropCol from 'components/taskDropCol'
 import CreateTaskForm from 'components/createTaskForm'
+import { config } from 'config'
+import { GetStaticProps } from 'next'
+import { taskReducer } from 'store/tasks'
 
-const Dashboard: React.FC = () => {
+const Dashboard: React.FC = ({ taskProp }: any) => {
   const { value } = useContext(StoreContext)
   const { state, dispatch } = value
-  const { tasks, notes, score } = state
+  const { notes, score } = state
   const [
     modalWithChildrenVisibility,
     setModalWithChildrenVisibility
   ] = useState(false)
+  const [tasks, taskDispatch] = useReducer(taskReducer, taskProp);
 
-  console.log('STATE', state)
+  //console.log('STATE', state)
+  console.log(tasks)
+  //console.log(process.env.NODE_ENV)
 
   const renderTodo = () => {
-    return tasks.todoTasks.map((todo: Todo) => (
+    return tasks.filter(task => task.type === "todo").map((todo: Todo) => (
       <Task
         type={TaskType.Todo}
         bg={'secondary'}
-        id={todo.id}
+        taskId={todo.taskId}
         title={todo.title}
         description={todo.description}
         score={todo.score}
@@ -36,36 +42,36 @@ const Dashboard: React.FC = () => {
   }
 
   const renderInProgress = () => {
-    return tasks.inProgressTasks.map((todo: InProgress) => (
+    return tasks.filter(task => task.type === "inprogress").map((inprogress: InProgress) => (
       <Task
         type={TaskType.InProgress}
         bg={'info'}
-        id={todo.id}
-        title={todo.title}
-        description={todo.description}
-        score={todo.score}
+        taskId={inprogress.taskId}
+        title={inprogress.title}
+        description={inprogress.description}
+        score={inprogress.score}
       />
     ))
   }
 
   const renderDone = () => {
-    return tasks.doneTasks.map((todo: Done) => (
+    return tasks.filter(task => task.type === "done").map((done: Done) => (
       <Task
         type={TaskType.Done}
         bg={'success'}
-        id={todo.id}
-        title={todo.title}
-        description={todo.description}
-        score={todo.score}
+        taskId={done.taskId}
+        title={done.title}
+        description={done.description}
+        score={done.score}
       />
     ))
   }
 
   const onDrop = (item, dropTarget) => {
     console.log(item)
-    dispatch({ type: 'MOVE_TASK', payload: item, dropTarget })
+    taskDispatch({ type: 'MOVE_TASK', payload: item, dropTarget })
 
-    if (item.type === 'inprogress' && dropTarget === 'doneTasks') {
+    if (item.type === 'inprogress' && dropTarget === 'done') {
       dispatch({ type: 'UPDATE_SCORE', payload: item.score })
     } else if (item.type === 'done') {
       dispatch({ type: 'UPDATE_SCORE', payload: -item.score })
@@ -89,7 +95,7 @@ const Dashboard: React.FC = () => {
               <TaskDropCol
                 onDrop={onDrop}
                 acceptTypes={[TaskType.InProgress]}
-                type={'todoTasks'}
+                type={'todo'}
               >
                 {renderTodo()}
               </TaskDropCol>
@@ -99,7 +105,7 @@ const Dashboard: React.FC = () => {
               <TaskDropCol
                 onDrop={onDrop}
                 acceptTypes={[TaskType.Todo, TaskType.Done]}
-                type={'inProgressTasks'}
+                type={'inprogress'}
               >
                 {renderInProgress()}
               </TaskDropCol>
@@ -109,7 +115,7 @@ const Dashboard: React.FC = () => {
               <TaskDropCol
                 onDrop={onDrop}
                 acceptTypes={[TaskType.InProgress]}
-                type={'doneTasks'}
+                type={'done'}
               >
                 {renderDone()}
               </TaskDropCol>
@@ -125,10 +131,24 @@ const Dashboard: React.FC = () => {
       >
         <CreateTaskForm
           closeModal={() => setModalWithChildrenVisibility(false)}
+          dispatch={taskDispatch}
         />
       </ModalWithChildren>
     </Layout>
   )
+}
+
+export const getStaticProps: GetStaticProps = async(context) => {
+  const response = await fetch(config.url.GET_TASKS)
+  const taskProp = await response.json()
+
+  //! TODO: null check
+  console.log(taskProp)
+  return {
+    props: {
+      taskProp
+    }, // will be passed to the page component as props
+  }
 }
 
 export default Dashboard

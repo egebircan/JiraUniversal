@@ -2,9 +2,11 @@ import React, { useState, useContext } from 'react'
 import { Form, Button } from 'react-bootstrap'
 import { StoreContext } from 'store'
 import { v4 as uuidv4 } from 'uuid'
+import { config } from 'config'
 
 interface CreateTaskFormProps {
   closeModal: () => any
+  dispatch: any
 }
 
 const CreateTaskForm: React.FC<CreateTaskFormProps> = (props) => {
@@ -19,8 +21,16 @@ const CreateTaskForm: React.FC<CreateTaskFormProps> = (props) => {
     setFormValues({ ...formValues, [name]: value })
   }
 
-  const onSubmit = () => {
-    dispatch({ type: 'CREATE_TASK', payload: { ...formValues, id: uuidv4() } })
+  const onSubmit = async() => {
+    const response = await fetch(
+      config.url.CREATE_TASK, 
+      { method: "POST", 
+        headers: {'Accept': 'application/json',
+                  'Content-Type': 'application/json'}, 
+        body: JSON.stringify({ ...formValues, taskId: 998, type: "todo"}) 
+      }
+    )
+    props.dispatch({ type: 'CREATE_TASK', payload: { ...formValues, taskId: 998, type: "todo" } })
     props.closeModal()
   }
 
