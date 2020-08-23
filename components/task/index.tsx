@@ -4,6 +4,7 @@ import { TaskType } from 'store/types'
 import { useDrag } from 'react-dnd'
 import ModalWithChildren from 'components/modalWithChildren'
 import { StoreContext } from 'store'
+import { config } from 'config'
 
 interface TaskCardProps {
   bg: string
@@ -12,6 +13,8 @@ interface TaskCardProps {
   score: number
   description: string
   type: TaskType
+  showErrorBox: any
+  dispatch: any
 }
 
 const Task: React.FC<TaskCardProps> = ({
@@ -20,14 +23,16 @@ const Task: React.FC<TaskCardProps> = ({
   bg,
   title,
   score,
-  description
+  description,
+  showErrorBox,
+  dispatch
 }) => {
   const [
     modalWithChildrenVisibility,
     setModalWithChildrenVisibility
   ] = useState(false)
   const { value } = useContext(StoreContext)
-  const { state, dispatch } = value
+  const { state, dispatch: scoreDispatch } = value
 
   const [{ isDragging }, drag] = useDrag({
     item: { taskId, type, title, description, score },
@@ -42,10 +47,31 @@ const Task: React.FC<TaskCardProps> = ({
     })
   })
 
-  const deleteTask = () => {
-    dispatch({ type: 'DELETE_TASK', payload: taskId })
-    if (type === 'done') dispatch({ type: 'UPDATE_SCORE', payload: -score })
-    setModalWithChildrenVisibility(false)
+  const deleteTask = async () => {
+    const response = await fetch(`${config.url.DELETE_TASK}/${taskId}`, {
+      method: 'DELETE',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      }
+    })
+
+    const jsonResponse = await response.json()
+    console.log(jsonResponse)
+    if (
+      jsonResponse &&
+      jsonResponse.result &&
+      jsonResponse.result === 'success'
+    ) {
+      dispatch({ type: 'DELETE_TASK', payload: taskId })
+      if (type === 'done')
+        scoreDispatch({ type: 'UPDATE_SCORE', payload: -score })
+
+      setModalWithChildrenVisibility(false)
+    } else {
+      setModalWithChildrenVisibility(false)
+      showErrorBox()
+    }
   }
 
   return (

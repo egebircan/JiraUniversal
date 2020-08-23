@@ -1,5 +1,5 @@
-const TASKS_BASE_URL = "http://localhost:8080/tasks" 
-const TOTAL_SCORE_BASE_URL = "http://localhost:8080/totalScore"
+const TASKS_BASE_URL = 'http://localhost:8080/tasks'
+const TOTAL_SCORE_BASE_URL = 'http://localhost:8080/totalScore'
 
 const prod = {
   url: {
@@ -17,4 +17,4 @@ const dev = {
   }
 }
 
-export const config = process.env.NODE_ENV === "development" ? dev : prod;
+export const config = process.env.NODE_ENV === 'development' ? dev : prod

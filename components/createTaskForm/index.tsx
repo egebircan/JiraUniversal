@@ -7,6 +7,7 @@ import { config } from 'config'
 interface CreateTaskFormProps {
   closeModal: () => any
   dispatch: any
+  showErrorBox: any
 }
 
 const CreateTaskForm: React.FC<CreateTaskFormProps> = (props) => {
@@ -21,17 +22,38 @@ const CreateTaskForm: React.FC<CreateTaskFormProps> = (props) => {
     setFormValues({ ...formValues, [name]: value })
   }
 
-  const onSubmit = async() => {
-    const response = await fetch(
-      config.url.CREATE_TASK, 
-      { method: "POST", 
-        headers: {'Accept': 'application/json',
-                  'Content-Type': 'application/json'}, 
-        body: JSON.stringify({ ...formValues, taskId: 998, type: "todo"}) 
-      }
-    )
-    props.dispatch({ type: 'CREATE_TASK', payload: { ...formValues, taskId: 998, type: "todo" } })
-    props.closeModal()
+  const onSubmit = async () => {
+    const taskId = uuidv4()
+
+    const response = await fetch(config.url.CREATE_TASK, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        ...formValues,
+        taskId,
+        type: 'todo',
+        userName: 'deneme'
+      })
+    })
+
+    const jsonResponse = await response.json()
+
+    if (
+      jsonResponse &&
+      jsonResponse.result &&
+      jsonResponse.result === 'success'
+    ) {
+      props.dispatch({
+        type: 'CREATE_TASK',
+        payload: { ...formValues, taskId, type: 'todo' }
+      })
+      props.closeModal()
+    } else {
+      props.showErrorBox()
+    }
   }
 
   return (

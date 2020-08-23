@@ -1,4 +1,4 @@
-import React, { useContext, useState, useReducer } from 'react'
+import React, { useContext, useState, useReducer, useEffect } from 'react'
 import { StoreContext } from 'store'
 import Layout from 'components/layout'
 import ModalWithChildren from 'components/modalWithChildren'
@@ -18,63 +18,104 @@ const Dashboard: React.FC = ({ taskProp }: any) => {
   const { value } = useContext(StoreContext)
   const { state, dispatch } = value
   const { notes, score } = state
-  const [
-    modalWithChildrenVisibility,
-    setModalWithChildrenVisibility
-  ] = useState(false)
-  const [tasks, taskDispatch] = useReducer(taskReducer, taskProp);
+  const [createTaskModalVisibility, setCreateTaskModalVisibility] = useState(
+    false
+  )
+
+  const [errorBoxVisibility, setErrorBoxVisibility] = useState(false)
+  useEffect(() => {
+    if (taskProp.dbResponse.result === 'fail') setErrorBoxVisibility(true)
+  }, [])
+
+  const [tasks, taskDispatch] = useReducer(taskReducer, taskProp.taskList)
 
   //console.log('STATE', state)
   console.log(tasks)
   //console.log(process.env.NODE_ENV)
 
   const renderTodo = () => {
-    return tasks.filter(task => task.type === "todo").map((todo: Todo) => (
-      <Task
-        type={TaskType.Todo}
-        bg={'secondary'}
-        taskId={todo.taskId}
-        title={todo.title}
-        description={todo.description}
-        score={todo.score}
-      />
-    ))
+    return tasks
+      .filter((task) => task.type === 'todo')
+      .map((todo: Todo) => (
+        <Task
+          type={TaskType.Todo}
+          bg={'secondary'}
+          taskId={todo.taskId}
+          title={todo.title}
+          description={todo.description}
+          score={todo.score}
+          showErrorBox={() => setErrorBoxVisibility(true)}
+          dispatch={taskDispatch}
+        />
+      ))
   }
 
   const renderInProgress = () => {
-    return tasks.filter(task => task.type === "inprogress").map((inprogress: InProgress) => (
-      <Task
-        type={TaskType.InProgress}
-        bg={'info'}
-        taskId={inprogress.taskId}
-        title={inprogress.title}
-        description={inprogress.description}
-        score={inprogress.score}
-      />
-    ))
+    return tasks
+      .filter((task) => task.type === 'inprogress')
+      .map((inprogress: InProgress) => (
+        <Task
+          type={TaskType.InProgress}
+          bg={'info'}
+          taskId={inprogress.taskId}
+          title={inprogress.title}
+          description={inprogress.description}
+          score={inprogress.score}
+          showErrorBox={() => setErrorBoxVisibility(true)}
+          dispatch={taskDispatch}
+        />
+      ))
   }
 
   const renderDone = () => {
-    return tasks.filter(task => task.type === "done").map((done: Done) => (
-      <Task
-        type={TaskType.Done}
-        bg={'success'}
-        taskId={done.taskId}
-        title={done.title}
-        description={done.description}
-        score={done.score}
-      />
-    ))
+    return tasks
+      .filter((task) => task.type === 'done')
+      .map((done: Done) => (
+        <Task
+          type={TaskType.Done}
+          bg={'success'}
+          taskId={done.taskId}
+          title={done.title}
+          description={done.description}
+          score={done.score}
+          showErrorBox={() => setErrorBoxVisibility(true)}
+          dispatch={taskDispatch}
+        />
+      ))
   }
 
-  const onDrop = (item, dropTarget) => {
+  const onDrop = async (item, dropTarget) => {
     console.log(item)
-    taskDispatch({ type: 'MOVE_TASK', payload: item, dropTarget })
 
-    if (item.type === 'inprogress' && dropTarget === 'done') {
-      dispatch({ type: 'UPDATE_SCORE', payload: item.score })
-    } else if (item.type === 'done') {
-      dispatch({ type: 'UPDATE_SCORE', payload: -item.score })
+    const response = await fetch(config.url.MOVE_TASKS, {
+      method: 'PATCH',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        taskId: item.taskId,
+        dropTarget
+      })
+    })
+
+    const jsonResponse = await response.json()
+    console.log(jsonResponse)
+
+    if (
+      jsonResponse &&
+      jsonResponse.result &&
+      jsonResponse.result === 'success'
+    ) {
+      taskDispatch({ type: 'MOVE_TASK', payload: item, dropTarget })
+
+      if (item.type === 'inprogress' && dropTarget === 'done') {
+        dispatch({ type: 'UPDATE_SCORE', payload: item.score })
+      } else if (item.type === 'done') {
+        dispatch({ type: 'UPDATE_SCORE', payload: -item.score })
+      }
+    } else {
+      setErrorBoxVisibility(true)
     }
   }
 
@@ -88,7 +129,7 @@ const Dashboard: React.FC = ({ taskProp }: any) => {
               <Button
                 variant="primary"
                 size="sm"
-                onClick={() => setModalWithChildrenVisibility(true)}
+                onClick={() => setCreateTaskModalVisibility(true)}
               >
                 +
               </Button>
@@ -125,20 +166,28 @@ const Dashboard: React.FC = ({ taskProp }: any) => {
       </DndProvider>
       <div style={{ textAlign: 'center' }}>{score}</div>
       <ModalWithChildren
-        show={modalWithChildrenVisibility}
-        onHide={() => setModalWithChildrenVisibility(false)}
+        show={createTaskModalVisibility}
+        onHide={() => setCreateTaskModalVisibility(false)}
         title="create task"
       >
         <CreateTaskForm
-          closeModal={() => setModalWithChildrenVisibility(false)}
+          closeModal={() => setCreateTaskModalVisibility(false)}
           dispatch={taskDispatch}
+          showErrorBox={() => setErrorBoxVisibility(true)}
         />
+      </ModalWithChildren>
+      <ModalWithChildren
+        show={errorBoxVisibility}
+        onHide={() => setErrorBoxVisibility(false)}
+        title="Error Box"
+      >
+        <div>FAILED</div>
       </ModalWithChildren>
     </Layout>
   )
 }
 
-export const getStaticProps: GetStaticProps = async(context) => {
+export const getStaticProps: GetStaticProps = async (context) => {
   const response = await fetch(config.url.GET_TASKS)
   const taskProp = await response.json()
 
@@ -147,7 +196,7 @@ export const getStaticProps: GetStaticProps = async(context) => {
   return {
     props: {
       taskProp
-    }, // will be passed to the page component as props
+    } // will be passed to the page component as props
   }
 }
 
