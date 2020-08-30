@@ -1,10 +1,10 @@
 import React, { useState, useContext } from 'react'
 import { Card, Button } from 'react-bootstrap'
 import { TaskType } from 'store/types'
-import { useDrag } from 'react-dnd'
 import ModalWithChildren from 'components/modalWithChildren'
 import { StoreContext } from 'store'
 import { config } from 'config'
+import { Draggable } from 'react-beautiful-dnd'
 
 interface TaskCardProps {
   bg: string
@@ -33,19 +33,6 @@ const Task: React.FC<TaskCardProps> = ({
   ] = useState(false)
   const { value } = useContext(StoreContext)
   const { state, dispatch: scoreDispatch } = value
-
-  const [{ isDragging }, drag] = useDrag({
-    item: { taskId, type, title, description, score },
-    end: (item, monitor) => {
-      const dropResult = monitor.getDropResult()
-      if (item && dropResult) {
-        //console.log(item)
-      }
-    },
-    collect: (monitor) => ({
-      isDragging: !!monitor.isDragging()
-    })
-  })
 
   const deleteTask = async () => {
     const response = await fetch(`${config.url.DELETE_TASK}/${taskId}`, {
@@ -76,28 +63,37 @@ const Task: React.FC<TaskCardProps> = ({
 
   return (
     <>
-      <div ref={drag}>
-        <Card
-          style={{ width: '16rem' }}
-          bg={bg}
-          text={'white'}
-          className="mb-2"
-        >
-          <Card.Header>
-            {title}
-            <Button
-              style={{ float: 'right' }}
-              onClick={() => setModalWithChildrenVisibility(true)}
+      <Draggable draggableId={taskId} index={0}>
+        {(provided, snapshot) => (
+          <div
+            {...provided.draggableProps}
+            ref={provided.innerRef}
+            isDragging={snapshot.isDragging}
+            {...provided.dragHandleProps}
+          >
+            <Card
+              style={{ width: '16rem' }}
+              bg={bg}
+              text={'white'}
+              className="mb-2"
             >
-              X
-            </Button>
-          </Card.Header>
-          <Card.Body>
-            <Card.Title>{score}</Card.Title>
-            <Card.Text>{description}</Card.Text>
-          </Card.Body>
-        </Card>
-      </div>
+              <Card.Header>
+                {title}
+                <Button
+                  style={{ float: 'right' }}
+                  onClick={() => setModalWithChildrenVisibility(true)}
+                >
+                  X
+                </Button>
+              </Card.Header>
+              <Card.Body>
+                <Card.Title>{score}</Card.Title>
+                <Card.Text>{description}</Card.Text>
+              </Card.Body>
+            </Card>
+          </div>
+        )}
+      </Draggable>
       <ModalWithChildren
         title="Delete Task"
         show={modalWithChildrenVisibility}

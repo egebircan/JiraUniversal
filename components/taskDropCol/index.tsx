@@ -1,31 +1,35 @@
 import React from 'react'
-import { useDrop } from 'react-dnd'
 import { TaskType } from '../../store/types'
+import { Droppable } from 'react-beautiful-dnd'
+import styled from 'styled-components'
 
 interface TaskDropColProps {
-  acceptTypes: TaskType[]
-  onDrop: any
-  type: string
+  droppableId: string
 }
 
-const TaskDropCol: React.FC<TaskDropColProps> = ({
-  children,
-  acceptTypes,
-  type,
-  onDrop
-}) => {
-  const [{ isOver, canDrop }, drop] = useDrop({
-    accept: acceptTypes,
-    drop: (item) => onDrop(item, type),
-    collect: (monitor) => ({
-      isOver: monitor.isOver(),
-      canDrop: monitor.canDrop()
-    })
-  })
+const TaskList = styled.div`
+  padding: 8px;
+  transition: background-color 0.2s ease;
+  background-color: ${(props) => (props.isDraggingOver ? 'skyblue' : 'white')};
+  flex-grow: 1;
+  min-height: 100px;
+`
 
+const TaskDropCol: React.FC<TaskDropColProps> = ({ children, droppableId }) => {
   return (
-    <div style={{ height: '700px', overflow: 'auto' }} ref={drop}>
-      {children}
+    <div style={{ height: '700px', overflow: 'auto' }}>
+      <Droppable droppableId={droppableId}>
+        {(provided, snapshot) => (
+          <TaskList
+            {...provided.droppableProps}
+            ref={provided.innerRef}
+            isDraggingOver={snapshot.isDraggingOver}
+          >
+            {children}
+            {provided.placeholder}
+          </TaskList>
+        )}
+      </Droppable>
     </div>
   )
 }

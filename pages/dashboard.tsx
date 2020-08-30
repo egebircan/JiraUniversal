@@ -6,13 +6,12 @@ import { Container, Row, Col, Button } from 'react-bootstrap'
 import { Todo, InProgress, Done } from 'store/types'
 import Task from 'components/task'
 import { TaskType } from 'store/types'
-import { DndProvider } from 'react-dnd'
-import { HTML5Backend } from 'react-dnd-html5-backend'
 import TaskDropCol from 'components/taskDropCol'
 import CreateTaskForm from 'components/createTaskForm'
 import { config } from 'config'
 import { GetStaticProps } from 'next'
 import { taskReducer } from 'store/tasks'
+import { DragDropContext } from 'react-beautiful-dnd'
 
 const Dashboard: React.FC = ({ taskProp }: any) => {
   const { value } = useContext(StoreContext)
@@ -84,9 +83,22 @@ const Dashboard: React.FC = ({ taskProp }: any) => {
       ))
   }
 
-  const onDrop = async (item, dropTarget) => {
-    console.log(item)
+  const onDragEnd = async (result) => {
+    console.log(result)
+    const { destination, source, draggableId } = result
 
+    if (!destination) {
+      return
+    }
+
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return
+    }
+
+    const item = tasks.find((task) => task.taskId === draggableId)
     const response = await fetch(config.url.MOVE_TASKS, {
       method: 'PATCH',
       headers: {
@@ -95,7 +107,7 @@ const Dashboard: React.FC = ({ taskProp }: any) => {
       },
       body: JSON.stringify({
         taskId: item.taskId,
-        dropTarget
+        dropTarget: destination.droppableId
       })
     })
 
@@ -107,9 +119,13 @@ const Dashboard: React.FC = ({ taskProp }: any) => {
       jsonResponse.result &&
       jsonResponse.result === 'success'
     ) {
-      taskDispatch({ type: 'MOVE_TASK', payload: item, dropTarget })
+      taskDispatch({
+        type: 'MOVE_TASK',
+        payload: item,
+        dropTarget: destination.droppableId
+      })
 
-      if (item.type === 'inprogress' && dropTarget === 'done') {
+      if (item.type === 'inprogress' && destination.droppableId === 'done') {
         dispatch({ type: 'UPDATE_SCORE', payload: item.score })
       } else if (item.type === 'done') {
         dispatch({ type: 'UPDATE_SCORE', payload: -item.score })
@@ -121,7 +137,7 @@ const Dashboard: React.FC = ({ taskProp }: any) => {
 
   return (
     <Layout>
-      <DndProvider backend={HTML5Backend}>
+      <DragDropContext onDragEnd={onDragEnd}>
         <Container style={{ marginTop: '50px' }}>
           <Row>
             <Col>
@@ -133,37 +149,21 @@ const Dashboard: React.FC = ({ taskProp }: any) => {
               >
                 +
               </Button>
-              <TaskDropCol
-                onDrop={onDrop}
-                acceptTypes={[TaskType.InProgress]}
-                type={'todo'}
-              >
-                {renderTodo()}
-              </TaskDropCol>
+              <TaskDropCol droppableId="todo">{renderTodo()}</TaskDropCol>
             </Col>
             <Col md={{ offset: 1 }}>
               IN-PROGRESS
-              <TaskDropCol
-                onDrop={onDrop}
-                acceptTypes={[TaskType.Todo, TaskType.Done]}
-                type={'inprogress'}
-              >
+              <TaskDropCol droppableId="inprogress">
                 {renderInProgress()}
               </TaskDropCol>
             </Col>
             <Col md={{ offset: 1 }}>
               DONE
-              <TaskDropCol
-                onDrop={onDrop}
-                acceptTypes={[TaskType.InProgress]}
-                type={'done'}
-              >
-                {renderDone()}
-              </TaskDropCol>
+              <TaskDropCol droppableId="done">{renderDone()}</TaskDropCol>
             </Col>
           </Row>
         </Container>
-      </DndProvider>
+      </DragDropContext>
       <div style={{ textAlign: 'center' }}>{score}</div>
       <ModalWithChildren
         show={createTaskModalVisibility}
