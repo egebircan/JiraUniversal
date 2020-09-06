@@ -17,6 +17,8 @@ export interface Action {
   type: string
   payload: any
   dropTarget: string
+  sourceIndex: number
+  destinationIndex: number
 }
 
 export type Todo = {

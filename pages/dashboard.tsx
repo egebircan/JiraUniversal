@@ -13,7 +13,7 @@ import { GetStaticProps } from 'next'
 import { taskReducer } from 'store/tasks'
 import { DragDropContext } from 'react-beautiful-dnd'
 
-const Dashboard: React.FC = ({ taskProp }: any) => {
+const Dashboard: React.FC = ({ fetchedTasks, dbResponse }: any) => {
   const { value } = useContext(StoreContext)
   const { state, dispatch } = value
   const { notes, score } = state
@@ -23,64 +23,64 @@ const Dashboard: React.FC = ({ taskProp }: any) => {
 
   const [errorBoxVisibility, setErrorBoxVisibility] = useState(false)
   useEffect(() => {
-    if (taskProp.dbResponse.result === 'fail') setErrorBoxVisibility(true)
+    if (dbResponse === 'fail') setErrorBoxVisibility(true)
   }, [])
 
-  const [tasks, taskDispatch] = useReducer(taskReducer, taskProp.taskList)
+  const [tasks, taskDispatch] = useReducer(taskReducer, fetchedTasks)
 
   //console.log('STATE', state)
   console.log(tasks)
   //console.log(process.env.NODE_ENV)
 
   const renderTodo = () => {
-    return tasks
-      .filter((task) => task.type === 'todo')
-      .map((todo: Todo) => (
-        <Task
-          type={TaskType.Todo}
-          bg={'secondary'}
-          taskId={todo.taskId}
-          title={todo.title}
-          description={todo.description}
-          score={todo.score}
-          showErrorBox={() => setErrorBoxVisibility(true)}
-          dispatch={taskDispatch}
-        />
-      ))
+    return tasks.todo.map((todo: Todo, index) => (
+      <Task
+        type={TaskType.Todo}
+        bg={'secondary'}
+        taskId={todo.taskId}
+        title={todo.title}
+        description={todo.description}
+        score={todo.score}
+        showErrorBox={() => setErrorBoxVisibility(true)}
+        dispatch={taskDispatch}
+        index={index}
+        key={todo.taskId}
+      />
+    ))
   }
 
   const renderInProgress = () => {
-    return tasks
-      .filter((task) => task.type === 'inprogress')
-      .map((inprogress: InProgress) => (
-        <Task
-          type={TaskType.InProgress}
-          bg={'info'}
-          taskId={inprogress.taskId}
-          title={inprogress.title}
-          description={inprogress.description}
-          score={inprogress.score}
-          showErrorBox={() => setErrorBoxVisibility(true)}
-          dispatch={taskDispatch}
-        />
-      ))
+    return tasks.inprogress.map((inprogress: InProgress, index) => (
+      <Task
+        type={TaskType.InProgress}
+        bg={'info'}
+        taskId={inprogress.taskId}
+        title={inprogress.title}
+        description={inprogress.description}
+        score={inprogress.score}
+        showErrorBox={() => setErrorBoxVisibility(true)}
+        dispatch={taskDispatch}
+        index={index}
+        key={inprogress.taskId}
+      />
+    ))
   }
 
   const renderDone = () => {
-    return tasks
-      .filter((task) => task.type === 'done')
-      .map((done: Done) => (
-        <Task
-          type={TaskType.Done}
-          bg={'success'}
-          taskId={done.taskId}
-          title={done.title}
-          description={done.description}
-          score={done.score}
-          showErrorBox={() => setErrorBoxVisibility(true)}
-          dispatch={taskDispatch}
-        />
-      ))
+    return tasks.done.map((done: Done, index) => (
+      <Task
+        type={TaskType.Done}
+        bg={'success'}
+        taskId={done.taskId}
+        title={done.title}
+        description={done.description}
+        score={done.score}
+        showErrorBox={() => setErrorBoxVisibility(true)}
+        dispatch={taskDispatch}
+        index={index}
+        key={done.taskId}
+      />
+    ))
   }
 
   const onDragEnd = async (result) => {
@@ -98,7 +98,24 @@ const Dashboard: React.FC = ({ taskProp }: any) => {
       return
     }
 
-    const item = tasks.find((task) => task.taskId === draggableId)
+    const item = tasks[source.droppableId].find(
+      (task) => task.taskId === draggableId
+    )
+
+    if (item.type === 'inprogress' && destination.droppableId === 'done') {
+      dispatch({ type: 'UPDATE_SCORE', payload: item.score })
+    } else if (item.type === 'done') {
+      dispatch({ type: 'UPDATE_SCORE', payload: -item.score })
+    }
+
+    taskDispatch({
+      type: 'MOVE_TASK',
+      payload: item,
+      dropTarget: destination.droppableId,
+      sourceIndex: source.index,
+      destinationIndex: destination.index
+    })
+
     const response = await fetch(config.url.MOVE_TASKS, {
       method: 'PATCH',
       headers: {
@@ -112,25 +129,12 @@ const Dashboard: React.FC = ({ taskProp }: any) => {
     })
 
     const jsonResponse = await response.json()
-    console.log(jsonResponse)
 
     if (
-      jsonResponse &&
-      jsonResponse.result &&
-      jsonResponse.result === 'success'
+      !jsonResponse ||
+      !jsonResponse.result ||
+      jsonResponse.result !== 'success'
     ) {
-      taskDispatch({
-        type: 'MOVE_TASK',
-        payload: item,
-        dropTarget: destination.droppableId
-      })
-
-      if (item.type === 'inprogress' && destination.droppableId === 'done') {
-        dispatch({ type: 'UPDATE_SCORE', payload: item.score })
-      } else if (item.type === 'done') {
-        dispatch({ type: 'UPDATE_SCORE', payload: -item.score })
-      }
-    } else {
       setErrorBoxVisibility(true)
     }
   }
@@ -189,13 +193,21 @@ const Dashboard: React.FC = ({ taskProp }: any) => {
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const response = await fetch(config.url.GET_TASKS)
-  const taskProp = await response.json()
+  const responseJson = await response.json()
+
+  const todo = responseJson.taskList.filter((task) => task.type === 'todo')
+  const inprogress = responseJson.taskList.filter(
+    (task) => task.type === 'inprogress'
+  )
+  const done = responseJson.taskList.filter((task) => task.type === 'done')
+
+  const fetchedTasks = { todo, inprogress, done }
 
   //! TODO: null check
-  console.log(taskProp)
   return {
     props: {
-      taskProp
+      fetchedTasks,
+      dbResponse: responseJson.dbResponse.result
     } // will be passed to the page component as props
   }
 }

@@ -15,6 +15,7 @@ interface TaskCardProps {
   type: TaskType
   showErrorBox: any
   dispatch: any
+  index: any
 }
 
 const Task: React.FC<TaskCardProps> = ({
@@ -25,7 +26,8 @@ const Task: React.FC<TaskCardProps> = ({
   score,
   description,
   showErrorBox,
-  dispatch
+  dispatch,
+  index
 }) => {
   const [
     modalWithChildrenVisibility,
@@ -33,6 +35,8 @@ const Task: React.FC<TaskCardProps> = ({
   ] = useState(false)
   const { value } = useContext(StoreContext)
   const { state, dispatch: scoreDispatch } = value
+
+  //console.log(index, title)
 
   const deleteTask = async () => {
     const response = await fetch(`${config.url.DELETE_TASK}/${taskId}`, {
@@ -44,13 +48,12 @@ const Task: React.FC<TaskCardProps> = ({
     })
 
     const jsonResponse = await response.json()
-    console.log(jsonResponse)
     if (
       jsonResponse &&
       jsonResponse.result &&
       jsonResponse.result === 'success'
     ) {
-      dispatch({ type: 'DELETE_TASK', payload: taskId })
+      dispatch({ type: 'DELETE_TASK', payload: { index, type } })
       if (type === 'done')
         scoreDispatch({ type: 'UPDATE_SCORE', payload: -score })
 
@@ -63,13 +66,13 @@ const Task: React.FC<TaskCardProps> = ({
 
   return (
     <>
-      <Draggable draggableId={taskId} index={0}>
+      <Draggable draggableId={taskId} index={index}>
         {(provided, snapshot) => (
           <div
-            {...provided.draggableProps}
             ref={provided.innerRef}
-            isDragging={snapshot.isDragging}
+            {...provided.draggableProps}
             {...provided.dragHandleProps}
+            isDragging={snapshot.isDragging}
           >
             <Card
               style={{ width: '16rem' }}
