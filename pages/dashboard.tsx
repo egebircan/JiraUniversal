@@ -102,9 +102,9 @@ const Dashboard: React.FC = ({ fetchedTasks, dbResponse }: any) => {
       (task) => task.taskId === draggableId
     )
 
-    if (item.type === 'inprogress' && destination.droppableId === 'done') {
+    if (item.type !== 'done' && destination.droppableId === 'done') {
       dispatch({ type: 'UPDATE_SCORE', payload: item.score })
-    } else if (item.type === 'done') {
+    } else if (item.type === 'done' && destination.droppableId !== 'done') {
       dispatch({ type: 'UPDATE_SCORE', payload: -item.score })
     }
 
