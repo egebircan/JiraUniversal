@@ -2,6 +2,7 @@ export interface State {
   tasks: TaskInterface[]
   notes: Note[]
   score: number
+  userName? : string
 }
 
 export type TaskInterface = {
