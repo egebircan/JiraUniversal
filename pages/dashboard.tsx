@@ -16,23 +16,34 @@ import { DragDropContext } from 'react-beautiful-dnd'
 const Dashboard: React.FC = ({ fetchedTasks, dbResponse }: any) => {
   const { value } = useContext(StoreContext)
   const { state, dispatch } = value
-  const { notes, score } = state
+  const { notes, score, userName } = state
   const [createTaskModalVisibility, setCreateTaskModalVisibility] = useState(
     false
   )
 
   const [errorBoxVisibility, setErrorBoxVisibility] = useState(false)
+
   useEffect(() => {
-    if (dbResponse === 'fail') setErrorBoxVisibility(true)
+    if (dbResponse === 'fail') 
+      setErrorBoxVisibility(true)
   }, [])
 
-  const [tasks, taskDispatch] = useReducer(taskReducer, fetchedTasks)
+  const filterTasksByUser = (obj) => {
+    let newobj = {}
+    for (let key in obj) {
+      newobj[key] = obj[key].filter(task => task.userName == userName)
+    }
+    return newobj
+  }
+
+  const [tasks, taskDispatch] = useReducer(taskReducer, filterTasksByUser(fetchedTasks))
 
   //console.log('STATE', state)
-  console.log(tasks)
+  //console.log(tasks, userName)
   //console.log(process.env.NODE_ENV)
 
   const renderTodo = () => {
+    console.log(tasks.todo)
     return tasks.todo.map((todo: Todo, index) => (
       <Task
         type={TaskType.Todo}
@@ -84,7 +95,6 @@ const Dashboard: React.FC = ({ fetchedTasks, dbResponse }: any) => {
   }
 
   const onDragEnd = async (result) => {
-    console.log(result)
     const { destination, source, draggableId } = result
 
     if (!destination) {
@@ -101,6 +111,8 @@ const Dashboard: React.FC = ({ fetchedTasks, dbResponse }: any) => {
     const item = tasks[source.droppableId].find(
       (task) => task.taskId === draggableId
     )
+
+    //console.log(item)
 
     if (item.type !== 'done' && destination.droppableId === 'done') {
       dispatch({ type: 'UPDATE_SCORE', payload: item.score })

@@ -27,6 +27,7 @@ export type Todo = {
   title: string
   description: string
   score: number
+  userName: string
 }
 
 export type InProgress = {
@@ -34,6 +35,7 @@ export type InProgress = {
   title: string
   description: string
   score: number
+  userName: string
 }
 
 export type Done = {
@@ -41,6 +43,7 @@ export type Done = {
   title: string
   description: string
   score: number
+  userName: string
 }
 
 export type Note = {

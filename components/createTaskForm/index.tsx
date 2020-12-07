@@ -14,6 +14,7 @@ const CreateTaskForm: React.FC<CreateTaskFormProps> = (props) => {
   const [formValues, setFormValues] = useState({})
   const { value } = useContext(StoreContext)
   const { state, dispatch } = value
+  const { userName } = state
 
   const onChange = (e) => {
     let { name, value } = e.target
@@ -35,7 +36,7 @@ const CreateTaskForm: React.FC<CreateTaskFormProps> = (props) => {
         ...formValues,
         taskId,
         type: 'todo',
-        userName: 'deneme'
+        userName: userName
       })
     })
 
@@ -48,7 +49,7 @@ const CreateTaskForm: React.FC<CreateTaskFormProps> = (props) => {
     ) {
       props.dispatch({
         type: 'CREATE_TASK',
-        payload: { ...formValues, taskId, type: 'todo' }
+        payload: { ...formValues, taskId, type: 'todo', userName }
       })
       props.closeModal()
     } else {

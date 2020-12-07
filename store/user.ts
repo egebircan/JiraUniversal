@@ -1,5 +1,3 @@
-import { State, Action, Note } from './types'
-
 export function userReducer(state: String, action: any) {
   switch (action.type) {
     case 'LOGIN':
