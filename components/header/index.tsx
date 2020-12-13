@@ -7,17 +7,12 @@ const Header: React.FC = () => (
   <Nav fill className={styles.header} variant="tabs" defaultActiveKey="/home">
     <Nav.Item>
       <Link href="/dashboard" passHref>
-        <Nav.Link>Dashboard</Nav.Link>
+        <Nav.Link style={{fontSize: "40px"}}>Dashboard</Nav.Link>
       </Link>
     </Nav.Item>
     <Nav.Item>
       <Link href="/leaderboard" passHref>
-        <Nav.Link>Leaderboard</Nav.Link>
-      </Link>
-    </Nav.Item>
-    <Nav.Item>
-      <Link href="/notifications" passHref>
-        <Nav.Link>Notifications</Nav.Link>
+        <Nav.Link style={{fontSize: "40px"}}>Leaderboard</Nav.Link>
       </Link>
     </Nav.Item>
   </Nav>

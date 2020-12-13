@@ -5,7 +5,7 @@ import ModalWithChildren from 'components/modalWithChildren'
 import { Container, Row, Col, Button } from 'react-bootstrap'
 import { Todo, InProgress, Done } from 'store/types'
 import Task from 'components/task'
-import { TaskType } from 'store/types'
+import { TaskType, TaskInterface } from 'store/types'
 import TaskDropCol from 'components/taskDropCol'
 import CreateTaskForm from 'components/createTaskForm'
 import { config } from 'config'
@@ -26,6 +26,19 @@ const Dashboard: React.FC = ({ fetchedTasks, dbResponse }: any) => {
   useEffect(() => {
     if (dbResponse === 'fail') 
       setErrorBoxVisibility(true)
+
+    const calculateTotalScore = () => {
+      let totalScore = 0
+      let filteredTasks = filterTasksByUser(fetchedTasks)
+      filteredTasks["done"].forEach((element: TaskInterface) => {
+        if(element.type === TaskType.Done) {
+          totalScore += element.score
+        }
+      });
+      dispatch({ type: 'INITIAL_SCORE', payload: totalScore })    
+    }
+
+    calculateTotalScore()   
   }, [])
 
   const filterTasksByUser = (obj) => {
@@ -33,8 +46,11 @@ const Dashboard: React.FC = ({ fetchedTasks, dbResponse }: any) => {
     for (let key in obj) {
       newobj[key] = obj[key].filter(task => task.userName == userName)
     }
+    
     return newobj
   }
+
+  
 
   const [tasks, taskDispatch] = useReducer(taskReducer, filterTasksByUser(fetchedTasks))
 
