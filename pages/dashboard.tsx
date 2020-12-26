@@ -12,6 +12,7 @@ import { config } from 'config'
 import { GetStaticProps } from 'next'
 import { taskReducer } from 'store/tasks'
 import { DragDropContext } from 'react-beautiful-dnd'
+import Link from 'next/link'
 
 const Dashboard: React.FC = ({ fetchedTasks, dbResponse }: any) => {
   const { value } = useContext(StoreContext)
@@ -215,6 +216,9 @@ const Dashboard: React.FC = ({ fetchedTasks, dbResponse }: any) => {
       >
         <div>FAILED</div>
       </ModalWithChildren>
+      <Link href="/">
+        <button onClick={() => dispatch({ type: 'LOGOUT' })}>Log Out</button>
+      </Link>
     </Layout>
   )
 }

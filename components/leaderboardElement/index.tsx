@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from 'react'
+import React from 'react'
 import { StoreContext } from 'store'
 
 const LeaderboardElement: React.FC = ({order, userName, totalScore}: any) => {
