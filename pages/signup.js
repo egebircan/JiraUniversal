@@ -8,10 +8,16 @@ function Sign_up(props) {
     const router = useRouter()
   
     const [formValues, setFormValues] = useState({})
+    const [errorMsg, setErrorMsg] = useState("")
   
     const handleSubmit = async (e) => {
       e.preventDefault()
-  
+
+      if(!formValues.userName || !formValues.password) {
+        setErrorMsg("Fields cannot be empty")
+        return
+      }
+
       const response = await fetch(config.url.SIGN_UP, {
         method: 'POST',
         headers: {
@@ -26,6 +32,8 @@ function Sign_up(props) {
       const jsonResponse = await response.json()
       if(jsonResponse.result == "success") {
         router.push("/")
+      } else {
+        setErrorMsg(jsonResponse.result)
       }
     }
   
@@ -35,33 +43,34 @@ function Sign_up(props) {
     }
 
     return (
-        <div className="Login">
-            <Form>
-                <Form.Group size="lg" controlId="email">
-                    <Form.Label>Email</Form.Label>
-                    <Form.Control
-                        autoFocus
-                        onChange={onChange}
-                        name="userName"
-                    />
-                </Form.Group>
-                <Form.Group size="lg" controlId="password">
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control
-                        type="password"
-                        onChange={onChange}
-                        name="password"
-                    />
-                </Form.Group>
-                <Link href="/" passHref>
-                    <Button block size="lg" >
-                        Go To Login
-                    </Button>
-                </Link>
-                <Button block size="lg" onClick={handleSubmit}>
-                    Sign Up
+        <div className="Signup">
+          <Form>
+            <div style={{color: "red", marginBottom: "10px"}}>{errorMsg}</div>
+            <Form.Group size="lg" controlId="email">
+                <Form.Label>User Name</Form.Label>
+                <Form.Control
+                    autoFocus
+                    onChange={onChange}
+                    name="userName"
+                />
+            </Form.Group>
+            <Form.Group size="lg" controlId="password">
+                <Form.Label>Password</Form.Label>
+                <Form.Control
+                    type="password"
+                    onChange={onChange}
+                    name="password"
+                />
+            </Form.Group>
+            <Button block size="lg" onClick={handleSubmit}>
+                Sign Up
+            </Button>
+            <Link href="/" passHref>
+                <Button block size="lg" className="LoginBtn">
+                    Login
                 </Button>
-            </Form>
+            </Link>
+          </Form>
         </div>
     ) 
 }

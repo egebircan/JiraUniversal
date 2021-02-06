@@ -38,4 +38,23 @@ img {
     margin: 0 auto;
     max-width: 320px;
   }
+
+  .Signup {
+    padding: 60px 0;
+  }
+
+  .Signup form {
+    margin: 0 auto;
+    max-width: 320px;
+  }
+
+  .SignUpBtn {
+    max-width: 160px;
+    margin: 0 auto;
+  }
+
+  .LoginBtn {
+    max-width: 160px;
+    margin: 0 auto;
+  }
 }

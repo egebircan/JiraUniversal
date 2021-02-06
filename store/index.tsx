@@ -1,5 +1,4 @@
-import React, { createContext, useEffect, useState, useReducer } from 'react'
-import { THEME } from '../constants'
+import React, { createContext, useReducer } from 'react'
 import { State, Action } from './types'
 import { taskReducer } from './tasks'
 import { noteReducer } from './notes'
@@ -9,27 +8,6 @@ import { userReducer } from './user'
 export const StoreContext = createContext(null)
 
 export function StoreProvider({ children }) {
-  // THEME
-  const [theme, themeSet] = useState(null)
-
-  useEffect(() => {
-    const theme = localStorage.getItem('THEME') || THEME.LIGHT
-    themeSet(theme)
-  }, [])
-
-  const changeTheme = (theme) => {
-    themeSet(theme)
-    localStorage.setItem('THEME', theme)
-  }
-
-  useEffect(() => {
-    if (!theme) return
-    const $html = document.querySelector('html')
-    $html.classList.remove(...$html.classList)
-    $html.classList.add(theme.toString())
-  }, [theme])
-
-  //////
   const initialState: State = {
     tasks: [],
     notes: [],
@@ -53,7 +31,7 @@ export function StoreProvider({ children }) {
   const value = { state, dispatch }
 
   return (
-    <StoreContext.Provider value={{ value, theme, changeTheme }}>
+    <StoreContext.Provider value={{ value }}>
       {children}
     </StoreContext.Provider>
   )

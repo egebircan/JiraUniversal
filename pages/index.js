@@ -1,15 +1,9 @@
 import React, { useContext, useState } from 'react'
-import Head from 'next/head'
 import StoreContext from '../store'
-
-import Layout from '../components/layout'
-import * as Icon from '../components/icons'
-import { THEME } from '../constants'
 import { Button, Form } from 'react-bootstrap'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { config } from 'config'
-import { userReducer } from 'store/user'
 
 function HomePage() {
   const { value } = useContext(StoreContext)
@@ -18,11 +12,17 @@ function HomePage() {
   const router = useRouter()
 
   const [formValues, setFormValues] = useState({})
+  const [errorMsg, setErrorMsg] = useState("")
 
   console.log(userName)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+
+    if(!formValues.userName || !formValues.password) {
+      setErrorMsg("Fields cannot be empty")
+      return
+    }
 
     const response = await fetch(config.url.LOGIN, {
       method: 'POST',
@@ -40,6 +40,8 @@ function HomePage() {
     if(textResponse == formValues.userName) {
       dispatch({ type: 'LOGIN', payload: textResponse })
       router.push("/dashboard")
+    } else {
+      setErrorMsg(textResponse)
     }
   }
 
@@ -51,8 +53,9 @@ function HomePage() {
   return (
     <div className="Login">
       <Form>
+        <div style={{color: "red", marginBottom: "10px"}}>{errorMsg}</div>
         <Form.Group size="lg" controlId="email">
-          <Form.Label>Email</Form.Label>
+          <Form.Label>User Name</Form.Label>
           <Form.Control
             autoFocus
             onChange={onChange}
@@ -67,15 +70,14 @@ function HomePage() {
             name="password"
           />
         </Form.Group>
-        <Link href="/signup" passHref>
-          <Button block size="lg" >
-            SignUp
-          </Button>
-        </Link>
-
         <Button block size="lg" type="submit" onClick={handleSubmit}>
           Login
         </Button>
+        <Link href="/signup" passHref>
+          <Button block size="lg" className="SignUpBtn">
+            Sign Up
+          </Button>
+        </Link>
       </Form>
     </div>
   )
