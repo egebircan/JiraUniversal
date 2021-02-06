@@ -1,6 +1,6 @@
-const TASKS_BASE_URL = 'http://localhost:8080/tasks'
-const TOTAL_SCORE_BASE_URL = 'http://localhost:8080/totalScore'
-const AUTH_BASE_URL = 'http://localhost:8080/auth'
+const TASKS_BASE_URL = 'https://warm-basin-58436.herokuapp.com/tasks'
+const TOTAL_SCORE_BASE_URL = 'https://warm-basin-58436.herokuapp.com/totalScore'
+const AUTH_BASE_URL = 'https://warm-basin-58436.herokuapp.com/auth'
 
 const prod = {
   url: {
