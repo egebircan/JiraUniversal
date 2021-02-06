@@ -7,7 +7,7 @@
     "build:sb": "yarn run build-storybook",
     "build:next": "NODE_ENV=production next build",
     "build": "yarn run build:sb && yarn run build:next",
-    "start": "next start",
+    "start": "next start -p $PORT",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook -o public/ui",
     "icon": "svgr icons -d components/icons --icon"
