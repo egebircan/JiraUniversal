@@ -18,9 +18,7 @@ const Dashboard: React.FC = ({ fetchedTasks, dbResponse }: any) => {
   const { value } = useContext(StoreContext)
   const { state, dispatch } = value
   const { score, userName } = state
-  const [createTaskModalVisibility, setCreateTaskModalVisibility] = useState(
-    false
-  )
+  const [createTaskModalVisibility, setCreateTaskModalVisibility] = useState(false)
 
   const [errorBoxVisibility, setErrorBoxVisibility] = useState(false)
 
@@ -50,17 +48,14 @@ const Dashboard: React.FC = ({ fetchedTasks, dbResponse }: any) => {
     return newobj
   }
 
-  const [tasks, taskDispatch] = useReducer(
-    taskReducer,
-    filterTasksByUser(fetchedTasks)
-  )
+  const [tasks, taskDispatch] = useReducer(taskReducer, filterTasksByUser(fetchedTasks))
 
   //console.log('STATE', state)
   //console.log(tasks, userName)
   //console.log(process.env.NODE_ENV)
 
   const renderTodo = () => {
-    console.log(tasks.todo)
+    //console.log(tasks.todo)
     return tasks.todo.map((todo: Todo, index) => (
       <Task
         type={TaskType.Todo}
@@ -118,16 +113,11 @@ const Dashboard: React.FC = ({ fetchedTasks, dbResponse }: any) => {
       return
     }
 
-    if (
-      destination.droppableId === source.droppableId &&
-      destination.index === source.index
-    ) {
+    if (destination.droppableId === source.droppableId && destination.index === source.index) {
       return
     }
 
-    const item = tasks[source.droppableId].find(
-      (task) => task.taskId === draggableId
-    )
+    const item = tasks[source.droppableId].find((task) => task.taskId === draggableId)
 
     //console.log(item)
 
@@ -159,11 +149,7 @@ const Dashboard: React.FC = ({ fetchedTasks, dbResponse }: any) => {
 
     const jsonResponse = await response.json()
 
-    if (
-      !jsonResponse ||
-      !jsonResponse.result ||
-      jsonResponse.result !== 'success'
-    ) {
+    if (!jsonResponse || !jsonResponse.result || jsonResponse.result !== 'success') {
       setErrorBoxVisibility(true)
     }
   }
@@ -202,9 +188,7 @@ const Dashboard: React.FC = ({ fetchedTasks, dbResponse }: any) => {
               <div style={{ textAlign: 'center' }}>
                 <h4>IN PROGRESS</h4>
               </div>{' '}
-              <TaskDropCol droppableId="inprogress">
-                {renderInProgress()}
-              </TaskDropCol>
+              <TaskDropCol droppableId="inprogress">{renderInProgress()}</TaskDropCol>
             </Col>
             <Col>
               <div style={{ textAlign: 'center' }}>
@@ -215,9 +199,7 @@ const Dashboard: React.FC = ({ fetchedTasks, dbResponse }: any) => {
           </Row>
         </Container>
       </DragDropContext>
-      <div style={{ textAlign: 'center', fontSize: '25px', marginTop: '20px' }}>
-        Score: {score}
-      </div>
+      <div style={{ textAlign: 'center', fontSize: '25px', marginTop: '20px' }}>Score: {score}</div>
       <ModalWithChildren
         show={createTaskModalVisibility}
         onHide={() => setCreateTaskModalVisibility(false)}
@@ -245,9 +227,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const responseJson = await response.json()
 
   const todo = responseJson.taskList.filter((task) => task.type === 'todo')
-  const inprogress = responseJson.taskList.filter(
-    (task) => task.type === 'inprogress'
-  )
+  const inprogress = responseJson.taskList.filter((task) => task.type === 'inprogress')
   const done = responseJson.taskList.filter((task) => task.type === 'done')
 
   const fetchedTasks = { todo, inprogress, done }

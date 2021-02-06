@@ -14,7 +14,7 @@ function HomePage() {
   const [formValues, setFormValues] = useState({})
   const [errorMsg, setErrorMsg] = useState('')
 
-  console.log(userName)
+  //console.log(userName)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -36,7 +36,7 @@ function HomePage() {
     })
 
     const textResponse = await response.text()
-    console.log(textResponse)
+    //console.log(textResponse)
     if (textResponse == formValues.userName) {
       dispatch({ type: 'LOGIN', payload: textResponse })
       router.push('/dashboard')
@@ -52,9 +52,7 @@ function HomePage() {
 
   return (
     <>
-      <div className="placeholder">
-        This website is not responsive. Please visit on a computer.
-      </div>
+      <div className="placeholder">This website is not responsive. Please visit on a computer.</div>
       <div className="info" style={{ textAlign: 'center', marginTop: '50px' }}>
         <h1>League of Tasks</h1>
         <h5>a competitive way to organize your work</h5>

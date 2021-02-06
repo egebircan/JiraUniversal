@@ -21,15 +21,15 @@ const Leaderboard: React.FC = ({ responseJson }: any) => {
   const ref = useRef()
 
   const renderLeaderboard = () => {
-    console.log(responseJson)
+    //console.log(responseJson)
     /* for (let i = 0; i < 101; i++) {
       responseJson.unshift({ userName: 'ege', totalScore: 34 })
     } */
 
     const responseArray = responseJson.map((e, index) => {
       if (userName === e.userName) {
-        console.log('GİRİYOR')
-        console.log(ref)
+        //console.log('GİRİYOR')
+        //console.log(ref)
         return (
           <tr
             ref={ref}
@@ -51,7 +51,7 @@ const Leaderboard: React.FC = ({ responseJson }: any) => {
       )
     })
 
-    console.log(ref)
+    //console.log(ref)
 
     return responseArray
   }
