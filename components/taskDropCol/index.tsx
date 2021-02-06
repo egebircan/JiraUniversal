@@ -17,7 +17,7 @@ const TaskList = styled.div`
 
 const TaskDropCol: React.FC<TaskDropColProps> = ({ children, droppableId }) => {
   return (
-    <div style={{ height: '700px', overflow: 'auto' }}>
+    <div style={{ height: '600px', overflow: 'auto' }}>
       <Droppable droppableId={droppableId}>
         {(provided, snapshot) => (
           <TaskList

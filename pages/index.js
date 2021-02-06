@@ -12,15 +12,15 @@ function HomePage() {
   const router = useRouter()
 
   const [formValues, setFormValues] = useState({})
-  const [errorMsg, setErrorMsg] = useState("")
+  const [errorMsg, setErrorMsg] = useState('')
 
   console.log(userName)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    if(!formValues.userName || !formValues.password) {
-      setErrorMsg("Fields cannot be empty")
+    if (!formValues.userName || !formValues.password) {
+      setErrorMsg('Fields cannot be empty')
       return
     }
 
@@ -31,15 +31,15 @@ function HomePage() {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        ...formValues,
+        ...formValues
       })
     })
 
     const textResponse = await response.text()
     console.log(textResponse)
-    if(textResponse == formValues.userName) {
+    if (textResponse == formValues.userName) {
       dispatch({ type: 'LOGIN', payload: textResponse })
-      router.push("/dashboard")
+      router.push('/dashboard')
     } else {
       setErrorMsg(textResponse)
     }
@@ -51,35 +51,36 @@ function HomePage() {
   }
 
   return (
-    <div className="Login">
-      <Form>
-        <div style={{color: "red", marginBottom: "10px"}}>{errorMsg}</div>
-        <Form.Group size="lg" controlId="email">
-          <Form.Label>User Name</Form.Label>
-          <Form.Control
-            autoFocus
-            onChange={onChange}
-            name="userName"
-          />
-        </Form.Group>
-        <Form.Group size="lg" controlId="password">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            onChange={onChange}
-            type="password"
-            name="password"
-          />
-        </Form.Group>
-        <Button block size="lg" type="submit" onClick={handleSubmit}>
-          Login
-        </Button>
-        <Link href="/signup" passHref>
-          <Button block size="lg" className="SignUpBtn">
-            Sign Up
+    <>
+      <div className="placeholder">
+        This website is not responsive. Please visit on a computer.
+      </div>
+      <div className="info" style={{ textAlign: 'center', marginTop: '50px' }}>
+        <h1>League of Tasks</h1>
+        <h5>a competitive way to organize your work</h5>
+      </div>
+      <div className="Login">
+        <Form>
+          <div style={{ color: 'red', marginBottom: '10px' }}>{errorMsg}</div>
+          <Form.Group size="lg" controlId="email">
+            <Form.Label>User Name</Form.Label>
+            <Form.Control autoFocus onChange={onChange} name="userName" />
+          </Form.Group>
+          <Form.Group size="lg" controlId="password">
+            <Form.Label>Password</Form.Label>
+            <Form.Control onChange={onChange} type="password" name="password" />
+          </Form.Group>
+          <Button block size="lg" type="submit" onClick={handleSubmit}>
+            Login
           </Button>
-        </Link>
-      </Form>
-    </div>
+          <Link href="/signup" passHref>
+            <Button block size="lg" className="SignUpBtn">
+              Sign Up
+            </Button>
+          </Link>
+        </Form>
+      </div>
+    </>
   )
 }
 

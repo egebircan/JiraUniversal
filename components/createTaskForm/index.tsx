@@ -12,6 +12,7 @@ interface CreateTaskFormProps {
 
 const CreateTaskForm: React.FC<CreateTaskFormProps> = (props) => {
   const [formValues, setFormValues] = useState({})
+  const [errorMsg, setErrorMsg] = useState('')
   const { value } = useContext(StoreContext)
   const { state, dispatch } = value
   const { userName } = state
@@ -25,6 +26,12 @@ const CreateTaskForm: React.FC<CreateTaskFormProps> = (props) => {
 
   const onSubmit = async () => {
     const taskId = uuidv4()
+
+    const { title, description, score } = formValues
+    if (!title || !description || !score) {
+      setErrorMsg('Fields cannot be empty')
+      return
+    }
 
     const response = await fetch(config.url.CREATE_TASK, {
       method: 'POST',
@@ -59,6 +66,7 @@ const CreateTaskForm: React.FC<CreateTaskFormProps> = (props) => {
 
   return (
     <div>
+      <div style={{ marginBottom: '10px', color: 'red' }}>{errorMsg}</div>
       <Form.Label>Title</Form.Label>
       <Form.Control
         type="text"
@@ -75,9 +83,14 @@ const CreateTaskForm: React.FC<CreateTaskFormProps> = (props) => {
       />
       <Form.Label>Story Point</Form.Label>
       <Form.Control as="select" onChange={onChange} name={'score'}>
-        <option>1</option>
-        <option>2</option>
+        <option>Story Point</option>
         <option>3</option>
+        <option>5</option>
+        <option>8</option>
+        <option>13</option>
+        <option>21</option>
+        <option>34</option>
+        <option>55</option>
       </Form.Control>
       <Button onClick={onSubmit} style={{ float: 'right', margin: '15px' }}>
         Submit

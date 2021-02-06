@@ -57,4 +57,22 @@ img {
     max-width: 160px;
     margin: 0 auto;
   }
+
+  .placeholder {
+    display: none;
+  }
+}
+
+@media all and (max-width: 1000px) {
+  .placeholder {
+    display: block;
+  }
+
+  .Login {
+    display: none;
+  }
+
+  .info {
+    display: none;
+  }
 }

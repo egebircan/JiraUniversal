@@ -17,7 +17,7 @@ import Link from 'next/link'
 const Dashboard: React.FC = ({ fetchedTasks, dbResponse }: any) => {
   const { value } = useContext(StoreContext)
   const { state, dispatch } = value
-  const { notes, score, userName } = state
+  const { score, userName } = state
   const [createTaskModalVisibility, setCreateTaskModalVisibility] = useState(
     false
   )
@@ -25,35 +25,35 @@ const Dashboard: React.FC = ({ fetchedTasks, dbResponse }: any) => {
   const [errorBoxVisibility, setErrorBoxVisibility] = useState(false)
 
   useEffect(() => {
-    if (dbResponse === 'fail') 
-      setErrorBoxVisibility(true)
+    if (dbResponse === 'fail') setErrorBoxVisibility(true)
 
     const calculateTotalScore = () => {
       let totalScore = 0
       let filteredTasks = filterTasksByUser(fetchedTasks)
-      filteredTasks["done"].forEach((element: TaskInterface) => {
-        if(element.type === TaskType.Done) {
+      filteredTasks['done'].forEach((element: TaskInterface) => {
+        if (element.type === TaskType.Done) {
           totalScore += element.score
         }
-      });
-      dispatch({ type: 'INITIAL_SCORE', payload: totalScore })    
+      })
+      dispatch({ type: 'INITIAL_SCORE', payload: totalScore })
     }
 
-    calculateTotalScore()   
+    calculateTotalScore()
   }, [])
 
   const filterTasksByUser = (obj) => {
     let newobj = {}
     for (let key in obj) {
-      newobj[key] = obj[key].filter(task => task.userName == userName)
+      newobj[key] = obj[key].filter((task) => task.userName == userName)
     }
-    
+
     return newobj
   }
 
-  
-
-  const [tasks, taskDispatch] = useReducer(taskReducer, filterTasksByUser(fetchedTasks))
+  const [tasks, taskDispatch] = useReducer(
+    taskReducer,
+    filterTasksByUser(fetchedTasks)
+  )
 
   //console.log('STATE', state)
   //console.log(tasks, userName)
@@ -170,38 +170,58 @@ const Dashboard: React.FC = ({ fetchedTasks, dbResponse }: any) => {
 
   return (
     <Layout>
+      <Button
+        variant="primary"
+        size="lg"
+        onClick={() => setCreateTaskModalVisibility(true)}
+        style={{ marginTop: '15px', marginLeft: '15px' }}
+      >
+        Create New
+      </Button>
+      <Link href="/">
+        <Button
+          style={{ marginTop: '15px', marginRight: '15px', float: 'right' }}
+          onClick={() => dispatch({ type: 'LOGOUT' })}
+          variant="secondary"
+          size="lg"
+        >
+          Log Out
+        </Button>
+      </Link>
       <DragDropContext onDragEnd={onDragEnd}>
-        <Container style={{ marginTop: '50px' }}>
+        <Container style={{ marginTop: '0px' }}>
           <Row>
             <Col>
-              TODO
-              <Button
-                variant="primary"
-                size="sm"
-                onClick={() => setCreateTaskModalVisibility(true)}
-              >
-                +
-              </Button>
+              <div style={{ textAlign: 'center' }}>
+                <h4>TODO</h4>
+              </div>
+
               <TaskDropCol droppableId="todo">{renderTodo()}</TaskDropCol>
             </Col>
-            <Col md={{ offset: 1 }}>
-              IN-PROGRESS
+            <Col>
+              <div style={{ textAlign: 'center' }}>
+                <h4>IN PROGRESS</h4>
+              </div>{' '}
               <TaskDropCol droppableId="inprogress">
                 {renderInProgress()}
               </TaskDropCol>
             </Col>
-            <Col md={{ offset: 1 }}>
-              DONE
+            <Col>
+              <div style={{ textAlign: 'center' }}>
+                <h4>DONE</h4>
+              </div>{' '}
               <TaskDropCol droppableId="done">{renderDone()}</TaskDropCol>
             </Col>
           </Row>
         </Container>
       </DragDropContext>
-      <div style={{ textAlign: 'center' }}>{score}</div>
+      <div style={{ textAlign: 'center', fontSize: '25px', marginTop: '20px' }}>
+        Score: {score}
+      </div>
       <ModalWithChildren
         show={createTaskModalVisibility}
         onHide={() => setCreateTaskModalVisibility(false)}
-        title="create task"
+        title="Create Task"
       >
         <CreateTaskForm
           closeModal={() => setCreateTaskModalVisibility(false)}
@@ -216,9 +236,6 @@ const Dashboard: React.FC = ({ fetchedTasks, dbResponse }: any) => {
       >
         <div>FAILED</div>
       </ModalWithChildren>
-      <Link href="/">
-        <button onClick={() => dispatch({ type: 'LOGOUT' })}>Log Out</button>
-      </Link>
     </Layout>
   )
 }

@@ -74,24 +74,23 @@ const Task: React.FC<TaskCardProps> = ({
             {...provided.dragHandleProps}
             isDragging={snapshot.isDragging}
           >
-            <Card
-              style={{ width: '16rem' }}
-              bg={bg}
-              text={'white'}
-              className="mb-2"
-            >
+            <Card style={{}} bg={bg} text={'white'} className="mb-2">
               <Card.Header>
                 {title}
                 <Button
-                  style={{ float: 'right' }}
+                  style={{
+                    float: 'right',
+                    backgroundColor: 'red',
+                    borderColor: 'red'
+                  }}
                   onClick={() => setModalWithChildrenVisibility(true)}
                 >
                   X
                 </Button>
               </Card.Header>
               <Card.Body>
-                <Card.Title>{score}</Card.Title>
                 <Card.Text>{description}</Card.Text>
+                <Card.Title>{score}</Card.Title>
               </Card.Body>
             </Card>
           </div>
@@ -103,7 +102,9 @@ const Task: React.FC<TaskCardProps> = ({
         onHide={() => setModalWithChildrenVisibility(false)}
       >
         Are you sure to delete?
-        <Button onClick={deleteTask}>Yes</Button>
+        <Button style={{ marginLeft: '10px' }} onClick={deleteTask}>
+          Yes
+        </Button>
       </ModalWithChildren>
     </>
   )
