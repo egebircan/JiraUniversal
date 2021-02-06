@@ -1,6 +1,6 @@
-const TASKS_BASE_URL = 'https://warm-basin-58436.herokuapp.com/tasks'
-const TOTAL_SCORE_BASE_URL = 'https://warm-basin-58436.herokuapp.com/totalScore'
-const AUTH_BASE_URL = 'https://warm-basin-58436.herokuapp.com/auth'
+const TASKS_BASE_URL = 'https://obscure-escarpment-59899.herokuapp.com/tasks'
+const TOTAL_SCORE_BASE_URL = 'https://obscure-escarpment-59899.herokuapp.com/totalScore'
+const AUTH_BASE_URL = 'https://obscure-escarpment-59899.herokuapp.com/auth'
 
 const prod = {
   url: {
