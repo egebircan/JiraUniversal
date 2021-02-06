@@ -1,6 +1,6 @@
-const TASKS_BASE_URL = 'https://damp-shelf-66696.herokuapp.com/tasks'
-const TOTAL_SCORE_BASE_URL = 'https://damp-shelf-66696.herokuapp.com/totalScore'
-const AUTH_BASE_URL = 'http://localhost:8080/auth'
+const TASKS_BASE_URL = 'https://tranquil-taiga-25394.herokuapp.com/tasks'
+const TOTAL_SCORE_BASE_URL = 'https://tranquil-taiga-25394.herokuapp.com/totalScore'
+const AUTH_BASE_URL = 'https://tranquil-taiga-25394.herokuapp.com/auth'
 
 const prod = {
   url: {
