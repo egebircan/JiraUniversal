@@ -11,7 +11,7 @@ interface CreateTaskFormProps {
 }
 
 const CreateTaskForm: React.FC<CreateTaskFormProps> = (props) => {
-  const [formValues, setFormValues] = useState({})
+  const [formValues, setFormValues] = useState<any>({})
   const [errorMsg, setErrorMsg] = useState('')
   const { value } = useContext(StoreContext)
   const { state, dispatch } = value
@@ -49,11 +49,7 @@ const CreateTaskForm: React.FC<CreateTaskFormProps> = (props) => {
 
     const jsonResponse = await response.json()
 
-    if (
-      jsonResponse &&
-      jsonResponse.result &&
-      jsonResponse.result === 'success'
-    ) {
+    if (jsonResponse && jsonResponse.result && jsonResponse.result === 'success') {
       props.dispatch({
         type: 'CREATE_TASK',
         payload: { ...formValues, taskId, type: 'todo', userName }
@@ -68,12 +64,7 @@ const CreateTaskForm: React.FC<CreateTaskFormProps> = (props) => {
     <div>
       <div style={{ marginBottom: '10px', color: 'red' }}>{errorMsg}</div>
       <Form.Label>Title</Form.Label>
-      <Form.Control
-        type="text"
-        placeholder="Enter title"
-        name={'title'}
-        onChange={onChange}
-      />
+      <Form.Control type="text" placeholder="Enter title" name={'title'} onChange={onChange} />
       <Form.Label>Description</Form.Label>
       <Form.Control
         type="text"
