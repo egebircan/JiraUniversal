@@ -10,6 +10,9 @@ const nextConfig = {
   pwa: {
     dest: 'public',
     disable: isDev
+  },
+  typescript: {
+    ignoreBuildErrors: true
   }
 }
 

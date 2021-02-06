@@ -47,11 +47,7 @@ const Leaderboard: React.FC = ({ responseJson }: any) => {
         )
       }
       return (
-        <LeaderboardElement
-          order={index + 1}
-          userName={e.userName}
-          totalScore={e.totalScore}
-        />
+        <LeaderboardElement order={index + 1} userName={e.userName} totalScore={e.totalScore} />
       )
     })
 
@@ -63,10 +59,6 @@ const Leaderboard: React.FC = ({ responseJson }: any) => {
   useEffect(() => {
     ref && ref.current && ref.current.scrollIntoView({ behavior: 'smooth' })
   }, [])
-
-  const logout = () => {
-    dispatch({ type: 'LOGOUT' })
-  }
 
   return (
     <Layout>
