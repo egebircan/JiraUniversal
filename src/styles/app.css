@@ -1,0 +1,77 @@
+@import "https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css";
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-size: 1rem;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol";
+  font-weight: 400;
+  line-height: 1.5;
+  background-color: var(--c-primary);
+  color: var(--c-text);
+}
+
+img {
+  max-width: 100%;
+  vertical-align: middle;
+}
+
+@media all and (min-width: 480px) {
+  .Login {
+    padding: 60px 0;
+  }
+
+  .Login form {
+    margin: 0 auto;
+    max-width: 320px;
+  }
+
+  .Signup {
+    padding: 60px 0;
+  }
+
+  .Signup form {
+    margin: 0 auto;
+    max-width: 320px;
+  }
+
+  .SignUpBtn {
+    max-width: 160px;
+    margin: 0 auto;
+  }
+
+  .LoginBtn {
+    max-width: 160px;
+    margin: 0 auto;
+  }
+
+  .placeholder {
+    display: none;
+  }
+}
+
+@media all and (max-width: 1000px) {
+  .placeholder {
+    display: block;
+  }
+
+  .Login {
+    display: none;
+  }
+
+  .info {
+    display: none;
+  }
+}
